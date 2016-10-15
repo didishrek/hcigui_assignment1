@@ -8,6 +8,9 @@ package assignment_one;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -20,6 +23,8 @@ import java.text.DecimalFormat;
 public class Projectile extends Application {
 
     private final String TITLE = "Projectile";
+    private final String HUMAN = "Adult Human";
+    private final String PIANO = "Piano";
 
     //Layout
     private GridPane gp = new GridPane();
@@ -76,7 +81,7 @@ public class Projectile extends Application {
     @Override
     public void init() {
         //init combobox
-        projectile_type_combobox.getItems().addAll("Adult Human", "Piano");
+        projectile_type_combobox.getItems().addAll(HUMAN, PIANO);
         projectile_type_combobox.getSelectionModel().select(0);
 
         //init radio buttons
@@ -91,7 +96,6 @@ public class Projectile extends Application {
         //init slider
         angle_slider.setShowTickLabels(true);
         angle_slider.setShowTickMarks(true);
-        angle_slider.setMajorTickUnit(15.0);
 
         //init textfields
         mass_textField.setEditable(true);
@@ -100,7 +104,6 @@ public class Projectile extends Application {
         range_textField.setEditable(false);
         height_textField.setEditable(false);
         time_textField.setEditable(false);
-
 
         //init gridpane
         gp.addRow(0, projectile_type_label, projectile_type_combobox);
@@ -112,32 +115,46 @@ public class Projectile extends Application {
         gp.addRow(6, time_label, time_textField);
         gp.addRow(7, fire_button, erase_button);
 
-
-        // Layout controls as per the diagram, feel free to improve the UI.
-        // How many rows and columns do you want - work this out on paper first
-        // My version has 7 rows, you can look at the JavaFX API to see how to get controls to span more than one column
-
-        // Method call (not declaration!)  to initialize the controls based on the projectile type.
+        initalizeControlValues();
 
         //  Listener for angle Slider to set angle TextTield and the angle variable
         angle_slider.valueProperty().addListener(new ChangeListener<Number>(){
             public void changed(final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue){
-                angle_textField.setText(String.valueOf(newValue));
+                angle_textField.setText(String.valueOf(Math.round( (double)newValue * 100.0 ) / 100.0));
+                fire();
             }
         });
 
         // Listener for inital_speed ToggleGroup to set initital_speed TextField
-        this.initial_speed_toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+        initial_speed_toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle,Toggle new_toggle) {
-
+                intitial_speed_textField.setText(new_toggle.getProperties().values().toArray()[0].toString());
+                fire();
             }
         });
 
         // Listener to call the fire() method when the fire button is pressed
+        fire_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                fire();
+            }
+        });
 
         // Listener to initialize control values if the projectile type is changed
-
+        projectile_type_combobox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                initalizeControlValues();
+            }
+        });
         // Listener to initialize control values if the erase button is pressed
+        erase_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                initalizeControlValues();
+            }
+        });
 
     }
 
@@ -163,42 +180,45 @@ public class Projectile extends Application {
 
     // Method to harvest values from controls, perform calculation and display the results
     private void fire(){
-        //capture the values from the text fields outputting number errors where relevant
+        Double mass = Double.parseDouble(mass_textField.getText());
+        Double angle = Double.parseDouble(angle_textField.getText());
+        Double speed = Double.parseDouble(intitial_speed_textField.getText());
+        Double angle_rad = (angle * Math.PI) / 180.0;
 
-        // don't forget to convert your angle input to radians for use with Math.sin()
+        Double range = (Math.pow(speed, 2) / gravitational_accelleration) * Math.sin(2 * angle_rad);
+        Double time = ((2 * speed) * Math.sin(angle_rad)) / gravitational_accelleration;
+        Double height = (Math.pow(speed, 2) * Math.pow(Math.sin(angle_rad), 2)) / (2 * gravitational_accelleration);
 
-        // calculate the range of the projectile
+        range_textField.setText(range.toString());
+        time_textField.setText(time.toString());
+        height_textField.setText(height.toString());
 
-        // calculate the flight time of the projectile
-
-        // calculate the max height of the projectile
-
-        // display the results in the relevant TextFields
     }
 
     // Method to initalize the controls based on the selection of the projectile type
     private void initalizeControlValues(){
-        //if the projectile type is Adult Human then
-
-        //inital the mass to 80kg
-
-        //Set slider scale 0 to 90, set slider value to 45 and ticks to 10 units
-
-        // initalize the intital speed to fast
-        // else
-
-        //inital the mass to 400kg
-
-        //Set slider scale 0 to 40, set slider value to 20 and ticks to 10 units
-
-        // initalize the intial speed to slow
-        this.initial_speed_slow.setSelected(true);
-        this.intitial_speed_textField.setText((String) this.initial_speed_slow.getUserData());
+        if (HUMAN.equals(projectile_type_combobox.getValue())){
+            mass_textField.setText("80.0");
+            angle_slider.setMin(0);
+            angle_slider.setMax(90);
+            angle_slider.setValue(45.0);
+            angle_textField.setText("45.0");
+            angle_slider.setMajorTickUnit(15.0);
+            initial_speed_fast.setSelected(true);
+            intitial_speed_textField.setText((String) this.initial_speed_fast.getUserData());
+        } else if (PIANO.equals(projectile_type_combobox.getValue())){
+            mass_textField.setText("400.0");
+            angle_slider.setMin(0);
+            angle_slider.setMax(40);
+            angle_slider.setValue(20.0);
+            angle_textField.setText("20.0");
+            angle_slider.setMajorTickUnit(10.0);
+            initial_speed_slow.setSelected(true);
+            intitial_speed_textField.setText((String) this.initial_speed_slow.getUserData());
+        }
+        range_textField.setText("");
+        time_textField.setText("");
+        height_textField.setText("");
     }
-
-// display ticks etc
-
-
-// clear the results fields and variables
 }
 
