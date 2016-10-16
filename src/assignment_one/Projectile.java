@@ -10,7 +10,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -155,7 +154,20 @@ public class Projectile extends Application {
                 initalizeControlValues();
             }
         });
-
+        //This listener allows you to write Double. Nothing else.
+        mass_textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("^([0-9]*[.]?[0-9]*)")) {
+                    String txt = newValue.replaceAll("[^0-9.]", "");
+                    if (newValue.indexOf(".") != newValue.lastIndexOf(".")){
+                        int p = newValue.indexOf(".", newValue.indexOf(".")  + 1);
+                        txt = newValue.substring(0, p);
+                    }
+                    mass_textField.setText(txt);
+                }
+            }
+        });
     }
 
     // Overridden start method
@@ -163,7 +175,7 @@ public class Projectile extends Application {
     public void start(Stage primaryStage) {
         // set a title on the window, set a scene, size, and show the window
         primaryStage.setTitle(TITLE);
-        primaryStage.setScene(new Scene(gp, 800, 800));
+        primaryStage.setScene(new Scene(gp, 500, 300));
         primaryStage.show();
     }
 
@@ -180,18 +192,18 @@ public class Projectile extends Application {
 
     // Method to harvest values from controls, perform calculation and display the results
     private void fire(){
-        Double mass = Double.parseDouble(mass_textField.getText());
-        Double angle = Double.parseDouble(angle_textField.getText());
-        Double speed = Double.parseDouble(intitial_speed_textField.getText());
+        mass = Double.parseDouble(mass_textField.getText());
+        angle = Double.parseDouble(angle_textField.getText());
+        initial_speed = Double.parseDouble(intitial_speed_textField.getText());
         Double angle_rad = (angle * Math.PI) / 180.0;
 
-        Double range = (Math.pow(speed, 2) / gravitational_accelleration) * Math.sin(2 * angle_rad);
-        Double time = ((2 * speed) * Math.sin(angle_rad)) / gravitational_accelleration;
-        Double height = (Math.pow(speed, 2) * Math.pow(Math.sin(angle_rad), 2)) / (2 * gravitational_accelleration);
+        range = (Math.pow(initial_speed, 2) / gravitational_accelleration) * Math.sin(2 * angle_rad);
+        time = ((2 * initial_speed) * Math.sin(angle_rad)) / gravitational_accelleration;
+        height = (Math.pow(initial_speed, 2) * Math.pow(Math.sin(angle_rad), 2)) / (2 * gravitational_accelleration);
 
-        range_textField.setText(range.toString());
-        time_textField.setText(time.toString());
-        height_textField.setText(height.toString());
+        range_textField.setText(String.valueOf(Math.round(range * 100.0 ) / 100.0));
+        time_textField.setText(String.valueOf(Math.round(time * 100.0 ) / 100.0));
+        height_textField.setText(String.valueOf(Math.round(height * 100.0 ) / 100.0));
 
     }
 
