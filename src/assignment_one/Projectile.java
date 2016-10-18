@@ -5,6 +5,13 @@ package assignment_one;
  * There is error checking to ensure that suitable values are entered.
  */
 
+
+
+/*
+    Options :
+        - Can only write integer or double in mass_textField
+        -
+ */
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -82,6 +89,7 @@ public class Projectile extends Application {
         //init combobox
         projectile_type_combobox.getItems().addAll(HUMAN, PIANO);
         projectile_type_combobox.getSelectionModel().select(0);
+        projectile_type_combobox.setMaxWidth(Double.MAX_VALUE);
 
         //init radio buttons
         initial_speed_slow.setUserData("10");
