@@ -10,7 +10,7 @@ package assignment_one;
 /*
     Options :
         - Can only write integer or double in mass_textField
-        -
+        - Button color with css.
  */
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -112,6 +112,12 @@ public class Projectile extends Application {
         height_textField.setEditable(false);
         time_textField.setEditable(false);
 
+        //button color
+        erase_button.setId("button_erase");
+        erase_button.setMaxWidth(Double.MAX_VALUE);
+        fire_button.setId("button_fire");
+        fire_button.setMaxWidth(Double.MAX_VALUE);
+
         //init gridpane
         gp.addRow(0, projectile_type_label, projectile_type_combobox);
         gp.addRow(1, mass_label, mass_textField);
@@ -182,8 +188,12 @@ public class Projectile extends Application {
     @Override
     public void start(Stage primaryStage) {
         // set a title on the window, set a scene, size, and show the window
+        Scene scene = new Scene(gp, 500, 300);
+        scene.getStylesheets().add(getClass().getResource("CSS.css").toExternalForm());
         primaryStage.setTitle(TITLE);
-        primaryStage.setScene(new Scene(gp, 500, 300));
+        primaryStage.setScene(scene);
+//        primaryStage.setMinHeight(320);
+//        primaryStage.setMinWidth(500);
         primaryStage.show();
     }
 
@@ -212,7 +222,6 @@ public class Projectile extends Application {
         range_textField.setText(String.valueOf(Math.round(range * 100.0 ) / 100.0));
         time_textField.setText(String.valueOf(Math.round(time * 100.0 ) / 100.0));
         height_textField.setText(String.valueOf(Math.round(height * 100.0 ) / 100.0));
-
     }
 
     // Method to initalize the controls based on the selection of the projectile type

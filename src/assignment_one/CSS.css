@@ -1,0 +1,9 @@
+#button_erase {
+    -fx-background-color: linear-gradient(#ff5940, #ff0c20);
+    -fx-text-fill: #530907;
+}
+
+#button_fire {
+    -fx-background-color: linear-gradient(#f0ff35, #a9ff00);
+    -fx-text-fill: #395306;
+}
