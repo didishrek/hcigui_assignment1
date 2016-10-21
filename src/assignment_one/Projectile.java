@@ -5,13 +5,12 @@ package assignment_one;
  * There is error checking to ensure that suitable values are entered.
  */
 
-
-
 /*
     Options :
         - Can only write integer or double in mass_textField
         - Button color with css.
  */
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -112,10 +111,12 @@ public class Projectile extends Application {
         height_textField.setEditable(false);
         time_textField.setEditable(false);
 
-        //button color
-        erase_button.setId("button_erase");
+        //button color and sizes
+        erase_button.setStyle("-fx-background-color: linear-gradient(#ff5940, #ff0c20);" +
+                "-fx-text-fill: #530907;");
         erase_button.setMaxWidth(Double.MAX_VALUE);
-        fire_button.setId("button_fire");
+        fire_button.setStyle("-fx-background-color: linear-gradient(#f0ff35, #a9ff00);" +
+                "-fx-text-fill: #395306;");
         fire_button.setMaxWidth(Double.MAX_VALUE);
 
         //init gridpane
@@ -127,6 +128,8 @@ public class Projectile extends Application {
         gp.addRow(5, height_label, height_textField);
         gp.addRow(6, time_label, time_textField);
         gp.addRow(7, fire_button, erase_button);
+
+
 
         initalizeControlValues();
 
@@ -161,6 +164,7 @@ public class Projectile extends Application {
                 initalizeControlValues();
             }
         });
+
         // Listener to initialize control values if the erase button is pressed
         erase_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -168,6 +172,7 @@ public class Projectile extends Application {
                 initalizeControlValues();
             }
         });
+
         //This listener allows you to write Double. Nothing else.
         mass_textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -189,7 +194,6 @@ public class Projectile extends Application {
     public void start(Stage primaryStage) {
         // set a title on the window, set a scene, size, and show the window
         Scene scene = new Scene(gp, 500, 300);
-        scene.getStylesheets().add(getClass().getResource("CSS.css").toExternalForm());
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
 //        primaryStage.setMinHeight(320);
